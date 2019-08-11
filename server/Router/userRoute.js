@@ -4,7 +4,7 @@ const User = require("../Models/User");
 
 
 // GET ALL USERS ROUTE
-router.get("/api/users", (req, res) => {
+router.get("/", (req, res) => {
   User.find()
     .then(users => {
       res.status(200).json(users);
@@ -22,28 +22,26 @@ router.get("/api/users/:id", (req, res) => {
 });
 
 // CREATE NEW USER
-router.post("/api/users/", (req, res) => {
-  let user = new User(req.body)
-  console.log("req.body", req.body)
-  user
-    .save(err => {
-      if(err) {
-        return res.status(404).send(err)
-      } else {
-        return res.status(201).join(user)
-      }
-    })
+router.post("/", (req, res) => {
+ const newUser = new User(req.body);
+ newUser.save()
+ .then(users => {
+   res.status(201).json(users);
+ })
 });
 
 // UPDATE A USER
 router.put("api/users/:id", (req, res) => {
-  User.findByIdAndUpdate(req.params.id)
-  console.log("req.params.id", req.params.id)
-    .then(user => {
-      if (!user) res.status(404).send();
-      res.status(204).json(user);
-    })
-    .catch(err => res.status(500).send("Error, failed to update user!"));
+  const id = req.params.id;
+ User.findByIdAndUpdate(id, {
+   $set: {
+     firstName: req.body.firstName,
+     lastName: req.body.lastName,
+     email: req.body.email
+   }
+ }).then(updatedUser => {
+   res.status(204).json(updatedUser);
+ })
 });
 
 // DELETE A USER
