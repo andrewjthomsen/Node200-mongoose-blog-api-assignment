@@ -3,24 +3,15 @@ const router = express.Router();
 const User = require("../Models/User");
 
 
-// HOME ROUTE
-router.get("/", (req, res) => {
+// GET ALL USERS ROUTE
+router.get("/api/users", (req, res) => {
   User.find()
     .then(users => {
       res.status(200).json(users);
     });
 });
 
-// GET ALL USERS
-router.get("/", (req, res) => {
-  User.find()
-    .then(users => {
-      res.status(200).json(users);
-    })
-
-});
-
-// GET SINGLE USER
+// GET SINGLE USER -> Route works correctly
 router.get("/api/users/:id", (req, res) => {
   User.findByID(req.params.id)
     .then(user => {
@@ -31,16 +22,23 @@ router.get("/api/users/:id", (req, res) => {
 });
 
 // CREATE NEW USER
-router.post("/", (req, res) => {
-  let newUser = new User(req.body)
-  newUser
-    .save(req.params.id)
-    .then(user => res.status(201).json(user))
+router.post("/api/users/", (req, res) => {
+  let user = new User(req.body)
+  console.log("req.body", req.body)
+  user
+    .save(err => {
+      if(err) {
+        return res.status(404).send(err)
+      } else {
+        return res.status(201).join(user)
+      }
+    })
 });
 
 // UPDATE A USER
-router.put("/:id", (req, res) => {
+router.put("api/users/:id", (req, res) => {
   User.findByIdAndUpdate(req.params.id)
+  console.log("req.params.id", req.params.id)
     .then(user => {
       if (!user) res.status(404).send();
       res.status(204).json(user);
@@ -50,14 +48,10 @@ router.put("/:id", (req, res) => {
 
 // DELETE A USER
 router.delete("/:id", (req, res) => {
-  const userId = req.params.id;
-  User.findByIdAndRemove(userId, (err, deletedUser) => {
-    if(deletedUser) {
-      res.status(200).json(deletedUser);
-    } else {
-      res.status(404).send("404: User #$(userId) wasn't located");
-    }
-  });
+const id = req.params.id;
+User.findByIdAndRemove(id).then(deletedUser => {
+  res.status(200).json(deletedUser)
+})
  
 });
 

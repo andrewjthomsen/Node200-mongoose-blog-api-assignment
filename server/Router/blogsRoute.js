@@ -4,7 +4,7 @@ const Blog = require("../Models/Blog");
 const User = require("../Models/User");
 
 // GET ALL BLOGS
-router.get("/", (req, res) => {
+router.get("/api/blogs/", (req, res) => {
   Blog.find().then(blogs => {
     res.status(200).json(blogs);
   }).catch(e => res.status(500).send("Error"))
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 
 // GET ALL FEATURED BLOGS
 // *ROUTE NOT WORKING
-router.get("/featured", (req, res) => {
+router.get("/api/blogs/featured", (req, res) => {
   Blog.where("featured")
     .equals(true)
     .then(blog => {
@@ -57,7 +57,7 @@ router.post("/api/blogs/", (req, res) => {
 
 // UPDATE A BLOG
 // *Route isn't firing
-router.put("/:id", (req, res) => {
+router.put("/api/blogs/:id", (req, res) => {
   Blog.findByIdAndUpdate(req.params.id, { $set: req.body})
   .then(blogs => {
     res.status(204).json(blogs);
