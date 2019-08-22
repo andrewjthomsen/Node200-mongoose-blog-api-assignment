@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const morgan = require("morgan")
+const morgan = require("morgan");
+
+
 
 mongoose.connect("mongodb://localhost/my-blog",  { useNewUrlParser: true });
 mongoose.Promise = Promise;
@@ -14,6 +16,9 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
 
 
 app.use("/api/users", require("./Router/userRoute"));
