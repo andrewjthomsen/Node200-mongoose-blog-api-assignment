@@ -56,6 +56,8 @@ router.put('/:id', (req, res) => {
     .catch(err => res.status(500).send('Error: Unable to update blog. Please try again.'))
 });
 
+
+
 // Responsible for deleting a blog
 router.delete('/:id', (req, res) => {
   Blog.findByIdAndRemove(req.params.id)
